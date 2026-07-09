@@ -1,4 +1,4 @@
-# Windows Right-Click Video Trimmer (Sağ Tık Video Kırpıcı)
+# Windows Right-Click Video Trimmer
 
 Select Language:
 * [English](#english)
