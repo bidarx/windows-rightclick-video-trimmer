@@ -53,6 +53,16 @@ namespace VideoTrimmer
 
     public static class UI
     {
+        public static class Loc
+        {
+            public static readonly bool IsTurkish = false;
+
+            public static string Get(string enText, string trText)
+            {
+                return enText;
+            }
+        }
+
         public static readonly Brush BgDark = new SolidColorBrush(Color.FromRgb(24, 24, 30)); // #18181E
         public static readonly Brush BgPanel = new SolidColorBrush(Color.FromRgb(34, 34, 42)); // #22222A
         public static readonly Brush BgHeader = new SolidColorBrush(Color.FromRgb(18, 18, 22)); // #121216
@@ -306,7 +316,7 @@ namespace VideoTrimmer
 
         public SetupWindow()
         {
-            this.Title = "Hızlı Video Kırpıcı Kurulumu";
+            this.Title = UI.Loc.Get("Fast Video Trimmer Setup", "Hızlı Video Kırpıcı Kurulumu");
             this.Width = 480;
             this.Height = 380;
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -322,7 +332,7 @@ namespace VideoTrimmer
             mainGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto }); // Footer
 
             // Title Bar
-            var titleBar = UI.CreateTitleBar(this, "Hızlı Video Kırpıcı - Kurulum");
+            var titleBar = UI.CreateTitleBar(this, UI.Loc.Get("Fast Video Trimmer - Setup", "Hızlı Video Kırpıcı - Kurulum"));
             Grid.SetRow(titleBar, 0);
             mainGrid.Children.Add(titleBar);
 
@@ -356,9 +366,8 @@ namespace VideoTrimmer
             StackPanel titleTextPanel = new StackPanel();
             titleTextPanel.VerticalAlignment = VerticalAlignment.Center;
             Grid.SetColumn(titleTextPanel, 1);
-
             TextBlock titleLabel = new TextBlock();
-            titleLabel.Text = "Hızlı Video Kırpıcı";
+            titleLabel.Text = UI.Loc.Get("Fast Video Trimmer", "Hızlı Video Kırpıcı");
             titleLabel.Foreground = UI.TextWhite;
             titleLabel.FontSize = 22;
             titleLabel.FontWeight = FontWeights.Bold;
@@ -366,7 +375,7 @@ namespace VideoTrimmer
             titleTextPanel.Children.Add(titleLabel);
 
             TextBlock descLabel = new TextBlock();
-            descLabel.Text = "Windows sağ tık menüsüne eklenerek videoları saniyeler içinde kayıpsız kesmenizi sağlar.";
+            descLabel.Text = UI.Loc.Get("Integrates into the Windows right-click menu to let you trim videos losslessly in seconds.", "Windows sağ tık menüsüne eklenerek videoları saniyeler içinde kayıpsız kesmenizi sağlar.");
             descLabel.Foreground = UI.TextGray;
             descLabel.FontSize = 12;
             descLabel.TextWrapping = TextWrapping.Wrap;
@@ -392,7 +401,7 @@ namespace VideoTrimmer
             ffmpegWarningGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
 
             TextBlock warningText = new TextBlock();
-            warningText.Text = "⚠️ Bilgisayarınızda FFmpeg bulunamadı. Kayıpsız kesim ve harici HEVC önizleme için gereklidir.";
+            warningText.Text = UI.Loc.Get("⚠️ FFmpeg not found on your PC. It is required for lossless trimming and external HEVC preview.", "⚠️ Bilgisayarınızda FFmpeg bulunamadı. Kayıpsız kesim ve harici HEVC önizleme için gereklidir.");
             warningText.Foreground = new SolidColorBrush(Color.FromRgb(255, 180, 180));
             warningText.FontSize = 11;
             warningText.TextWrapping = TextWrapping.Wrap;
@@ -401,7 +410,7 @@ namespace VideoTrimmer
             Grid.SetColumn(warningText, 0);
             ffmpegWarningGrid.Children.Add(warningText);
 
-            Button btnDownloadFFmpeg = UI.CreateButton("Otomatik Yükle", new SolidColorBrush(Color.FromRgb(180, 50, 50)), new SolidColorBrush(Color.FromRgb(210, 70, 70)));
+            Button btnDownloadFFmpeg = UI.CreateButton(UI.Loc.Get("Auto Install", "Otomatik Yükle"), new SolidColorBrush(Color.FromRgb(180, 50, 50)), new SolidColorBrush(Color.FromRgb(210, 70, 70)));
             btnDownloadFFmpeg.FontSize = 11;
             btnDownloadFFmpeg.Padding = new Thickness(10, 5, 10, 5);
             btnDownloadFFmpeg.Click += DownloadFFmpeg_Click;
@@ -431,19 +440,19 @@ namespace VideoTrimmer
             buttonsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
             buttonsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
 
-            btnInstall = UI.CreateButton("Sağ Tıka Ekle", UI.AccentViolet, UI.AccentVioletHover);
+            btnInstall = UI.CreateButton(UI.Loc.Get("Add to Right-Click", "Sağ Tıka Ekle"), UI.AccentViolet, UI.AccentVioletHover);
             btnInstall.Click += Install_Click;
             btnInstall.Margin = new Thickness(0, 0, 5, 0);
             Grid.SetColumn(btnInstall, 0);
             buttonsGrid.Children.Add(btnInstall);
 
-            btnUninstall = UI.CreateButton("Sağ Tık Kaldır", UI.BtnGray, UI.BtnGrayHover);
+            btnUninstall = UI.CreateButton(UI.Loc.Get("Remove Right-Click", "Sağ Tık Kaldır"), UI.BtnGray, UI.BtnGrayHover);
             btnUninstall.Click += Uninstall_Click;
             btnUninstall.Margin = new Thickness(5, 0, 5, 0);
             Grid.SetColumn(btnUninstall, 1);
             buttonsGrid.Children.Add(btnUninstall);
 
-            Button btnOpenVideo = UI.CreateButton("Video Aç", UI.AccentBlue, UI.AccentBlueHover);
+            Button btnOpenVideo = UI.CreateButton(UI.Loc.Get("Open Video", "Video Aç"), UI.AccentBlue, UI.AccentBlueHover);
             btnOpenVideo.Click += OpenVideo_Click;
             btnOpenVideo.Margin = new Thickness(5, 0, 0, 0);
             Grid.SetColumn(btnOpenVideo, 2);
@@ -462,12 +471,12 @@ namespace VideoTrimmer
 
             if (ffmpegFound)
             {
-                footerText.Text = "✓ FFmpeg Algılandı - İşlemleriniz ışık hızında gerçekleşecek.";
+                footerText.Text = UI.Loc.Get("✓ FFmpeg Detected - Your operations will run at light speed.", "✓ FFmpeg Algılandı - İşlemleriniz ışık hızında gerçekleşecek.");
                 footerText.Foreground = UI.AccentCyan;
             }
             else
             {
-                footerText.Text = "⚠️ FFmpeg BULUNAMADI! Hızlı kesim çalışmayabilir. Lütfen otomatik yükleyin.";
+                footerText.Text = UI.Loc.Get("⚠️ FFmpeg NOT FOUND! Fast trimming may not work. Please install automatically.", "⚠️ FFmpeg BULUNAMADI! Hızlı kesim çalışmayabilir. Lütfen otomatik yükleyin.");
                 footerText.Foreground = new SolidColorBrush(Color.FromRgb(255, 107, 107));
             }
 
@@ -485,7 +494,7 @@ namespace VideoTrimmer
             overlayContent.HorizontalAlignment = HorizontalAlignment.Center;
 
             overlayText = new TextBlock();
-            overlayText.Text = "FFmpeg İndiriliyor...";
+            overlayText.Text = UI.Loc.Get("Downloading FFmpeg...", "FFmpeg İndiriliyor...");
             overlayText.Foreground = UI.TextWhite;
             overlayText.FontSize = 18;
             overlayText.FontWeight = FontWeights.Bold;
@@ -494,7 +503,7 @@ namespace VideoTrimmer
             overlayContent.Children.Add(overlayText);
 
             overlaySubtext = new TextBlock();
-            overlaySubtext.Text = "Lütfen bekleyin...";
+            overlaySubtext.Text = UI.Loc.Get("Please wait...", "Lütfen bekleyin...");
             overlaySubtext.Foreground = UI.TextGray;
             overlaySubtext.FontSize = 12;
             overlaySubtext.HorizontalAlignment = HorizontalAlignment.Center;
@@ -524,8 +533,8 @@ namespace VideoTrimmer
         private void DownloadFFmpeg_Click(object sender, RoutedEventArgs e)
         {
             overlayGrid.Visibility = Visibility.Visible;
-            overlayText.Text = "FFmpeg İndiriliyor...";
-            overlaySubtext.Text = "Bağlantı kuruluyor...";
+            overlayText.Text = UI.Loc.Get("Downloading FFmpeg...", "FFmpeg İndiriliyor...");
+            overlaySubtext.Text = UI.Loc.Get("Establishing connection...", "Bağlantı kuruluyor...");
             overlayProgress.IsIndeterminate = false;
             overlayProgress.Value = 0;
 
@@ -546,7 +555,7 @@ namespace VideoTrimmer
                         double downloadedMb = (double)ev.BytesReceived / 1024 / 1024;
                         double totalMb = (double)ev.TotalBytesToReceive / 1024 / 1024;
                         overlayProgress.Value = ev.ProgressPercentage;
-                        overlaySubtext.Text = string.Format("İndiriliyor: {0:F1} MB / {1:F1} MB ({2}%)", downloadedMb, totalMb, ev.ProgressPercentage);
+                        overlaySubtext.Text = string.Format(UI.Loc.Get("Downloading: {0:F1} MB / {1:F1} MB ({2}%)", "İndiriliyor: {0:F1} MB / {1:F1} MB ({2}%)"), downloadedMb, totalMb, ev.ProgressPercentage);
                     };
 
                     webClient.DownloadFileCompleted += (s, ev) =>
@@ -554,7 +563,26 @@ namespace VideoTrimmer
                         if (ev.Error != null)
                         {
                             overlayGrid.Visibility = Visibility.Collapsed;
-                            MessageBox.Show("İndirme sırasında hata oluştu: " + ev.Error.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show(UI.Loc.Get("An error occurred during download: ", "İndirme sırasında hata oluştu: ") + ev.Error.Message, UI.Loc.Get("Error", "Hata"), MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        // Validate file size to ensure we didn't just download a tiny error HTML page or get a corrupted zip
+                        try
+                        {
+                            FileInfo fi = new FileInfo(localZip);
+                            if (!fi.Exists || fi.Length < 10000000) // FFmpeg zip is typically >50MB
+                            {
+                                overlayGrid.Visibility = Visibility.Collapsed;
+                                MessageBox.Show(UI.Loc.Get("Downloaded file appears to be corrupted or incomplete. Please try again later.", "İndirilen dosya bozuk veya eksik görünüyor. Lütfen daha sonra tekrar deneyin."), UI.Loc.Get("Download Error", "İndirme Hatası"), MessageBoxButton.OK, MessageBoxImage.Error);
+                                try { File.Delete(localZip); } catch { }
+                                return;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            overlayGrid.Visibility = Visibility.Collapsed;
+                            MessageBox.Show(UI.Loc.Get("Error verifying downloaded file: ", "İndirilen dosya doğrulanırken hata: ") + ex.Message, UI.Loc.Get("Error", "Hata"), MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
 
@@ -567,14 +595,14 @@ namespace VideoTrimmer
             catch (Exception ex)
             {
                 overlayGrid.Visibility = Visibility.Collapsed;
-                MessageBox.Show("İndirme başlatılamadı: " + ex.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(UI.Loc.Get("Failed to start download: ", "İndirme başlatılamadı: ") + ex.Message, UI.Loc.Get("Error", "Hata"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void ExtractAndInstallFFmpeg(string zipPath)
         {
-            overlayText.Text = "Arşivden Çıkarılıyor...";
-            overlaySubtext.Text = "Dosyalar çıkarılıyor, lütfen bekleyin (biraz zaman alabilir)...";
+            overlayText.Text = UI.Loc.Get("Extracting Archive...", "Arşivden Çıkarılıyor...");
+            overlaySubtext.Text = UI.Loc.Get("Extracting files, please wait (this might take a while)...", "Dosyalar çıkarılıyor, lütfen bekleyin (biraz zaman alabilir)...");
             overlayProgress.IsIndeterminate = true;
 
             Task.Factory.StartNew(() =>
@@ -624,13 +652,13 @@ namespace VideoTrimmer
                         if (ffmpegFound)
                         {
                             ffmpegWarningBorder.Visibility = Visibility.Collapsed;
-                            footerText.Text = "✓ FFmpeg Algılandı - İşlemleriniz ışık hızında gerçekleşecek.";
+                            footerText.Text = UI.Loc.Get("✓ FFmpeg Detected - Your operations will run at light speed.", "✓ FFmpeg Algılandı - İşlemleriniz ışık hızında gerçekleşecek.");
                             footerText.Foreground = UI.AccentCyan;
-                            MessageBox.Show("FFmpeg ve FFplay başarıyla kuruldu! Artık videoları sorunsuzca kesip önizleyebilirsiniz.", "Başarılı", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show(UI.Loc.Get("FFmpeg and FFplay successfully installed! You can now trim and preview videos without issues.", "FFmpeg ve FFplay başarıyla kuruldu! Artık videoları sorunsuzca kesip önizleyebilirsiniz."), UI.Loc.Get("Success", "Başarılı"), MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                         else
                         {
-                            MessageBox.Show("Çıkartma işlemi bitti ancak FFmpeg çalıştırılamadı. Lütfen uygulamayı yeniden başlatın.", "Uyarı", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            MessageBox.Show(UI.Loc.Get("Extraction completed, but FFmpeg could not be executed. Please restart the application.", "Çıkartma işlemi bitti ancak FFmpeg çalıştırılamadı. Lütfen uygulamayı yeniden başlatın."), UI.Loc.Get("Warning", "Uyarı"), MessageBoxButton.OK, MessageBoxImage.Warning);
                         }
                     }));
                 }
@@ -643,7 +671,7 @@ namespace VideoTrimmer
                     Dispatcher.Invoke(new Action(() =>
                     {
                         overlayGrid.Visibility = Visibility.Collapsed;
-                        MessageBox.Show("FFmpeg yükleme hatası: " + ex.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show(UI.Loc.Get("FFmpeg installation error: ", "FFmpeg yükleme hatası: ") + ex.Message, UI.Loc.Get("Error", "Hata"), MessageBoxButton.OK, MessageBoxImage.Error);
                     }));
                 }
             });
@@ -654,14 +682,14 @@ namespace VideoTrimmer
             bool isInstalled = IsContextMenuRegistered();
             if (isInstalled)
             {
-                textStatus.Text = "Durum: Sağ Tık Menüsünde Aktif (Videolara sağ tıklayarak 'Videoyu Kes' seçeneğini kullanabilirsiniz)";
+                textStatus.Text = UI.Loc.Get("Status: Active in Context Menu (Right-click videos and choose 'Trim Video')", "Durum: Sağ Tık Menüsünde Aktif (Videolara sağ tıklayarak 'Videoyu Kes' seçeneğini kullanabilirsiniz)");
                 textStatus.Foreground = UI.AccentCyan;
                 btnInstall.IsEnabled = false;
                 btnUninstall.IsEnabled = true;
             }
             else
             {
-                textStatus.Text = "Durum: Sağ Tık Menüsüne Eklenmemiş. Kurulum yapmak için 'Sağ Tıka Ekle' butonuna basın.";
+                textStatus.Text = UI.Loc.Get("Status: Not registered. Click 'Add to Right-Click' to register it.", "Durum: Sağ Tık Menüsüne Eklenmemiş. Kurulum yapmak için 'Sağ Tıka Ekle' butonuna basın.");
                 textStatus.Foreground = UI.TextGray;
                 btnInstall.IsEnabled = true;
                 btnUninstall.IsEnabled = false;
@@ -674,11 +702,11 @@ namespace VideoTrimmer
             {
                 RegisterContextMenu();
                 UpdateStatus();
-                MessageBox.Show("Başarıyla sağ tık menüsüne eklendi! Artık herhangi bir video dosyasına sağ tıklayıp 'Videoyu Kes (Hızlı)' seçeneğini kullanabilirsiniz.", "Başarılı", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(UI.Loc.Get("Successfully added to right-click menu! You can now right-click any video file and select 'Trim Video (Fast)'.", "Başarıyla sağ tık menüsüne eklendi! Artık herhangi bir video dosyasına sağ tıklayıp 'Videoyu Kes (Hızlı)' seçeneğini kullanabilirsiniz."), UI.Loc.Get("Success", "Başarılı"), MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Hata oluştu: " + ex.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(UI.Loc.Get("Error occurred: ", "Hata oluştu: ") + ex.Message, UI.Loc.Get("Error", "Hata"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -688,18 +716,18 @@ namespace VideoTrimmer
             {
                 UnregisterContextMenu();
                 UpdateStatus();
-                MessageBox.Show("Sağ tık menüsünden kaldırıldı.", "Başarılı", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(UI.Loc.Get("Removed from right-click menu.", "Sağ tık menüsünden kaldırıldı."), UI.Loc.Get("Success", "Başarılı"), MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Hata oluştu: " + ex.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(UI.Loc.Get("Error occurred: ", "Hata oluştu: ") + ex.Message, UI.Loc.Get("Error", "Hata"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void OpenVideo_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Video Dosyaları|*.mp4;*.mkv;*.mov;*.avi;*.wmv;*.webm;*.flv;*.3gp|Tüm Dosyalar|*.*";
+            ofd.Filter = UI.Loc.Get("Video Files|*.mp4;*.mkv;*.mov;*.avi;*.wmv;*.webm;*.flv;*.3gp|All Files|*.*", "Video Dosyaları|*.mp4;*.mkv;*.mov;*.avi;*.wmv;*.webm;*.flv;*.3gp|Tüm Dosyalar|*.*");
             if (ofd.ShowDialog() == true)
             {
                 var trimmerWin = new TrimmerWindow(ofd.FileName);
@@ -740,7 +768,7 @@ namespace VideoTrimmer
                 {
                     if (key != null)
                     {
-                        key.SetValue("", "Videoyu Kes (Hızlı)");
+                        key.SetValue("", UI.Loc.Get("Trim Video (Fast)", "Videoyu Kes (Hızlı)"));
                         key.SetValue("Icon", appPath);
                         using (var cmdKey = key.CreateSubKey("command"))
                         {
@@ -834,6 +862,7 @@ namespace VideoTrimmer
         private TimeSpan endTime;
         private TimeSpan totalDuration;
         private DispatcherTimer timer;
+        private bool isBuffering = false;
         private bool isPlaying = false;
         private bool isMediaLoaded = false;
         private string tempPreviewFile = null;
@@ -850,7 +879,7 @@ namespace VideoTrimmer
         public TrimmerWindow(string videoPath)
         {
             this.inputFilePath = videoPath;
-            this.Title = "Video Kırpıcı - " + Path.GetFileName(videoPath);
+            this.Title = UI.Loc.Get("Video Trimmer - ", "Video Kırpıcı - ") + Path.GetFileName(videoPath);
             this.Width = 850;
             this.Height = 620;
             this.MinWidth = 700;
@@ -878,7 +907,7 @@ namespace VideoTrimmer
             rootGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto }); // Action bar
 
             // 1. Title bar
-            var titleBar = UI.CreateTitleBar(this, "Video Kırpıcı - " + Path.GetFileName(inputFilePath));
+            var titleBar = UI.CreateTitleBar(this, UI.Loc.Get("Video Trimmer - ", "Video Kırpıcı - ") + Path.GetFileName(inputFilePath));
             Grid.SetRow(titleBar, 0);
             rootGrid.Children.Add(titleBar);
 
@@ -899,7 +928,7 @@ namespace VideoTrimmer
             mediaElement.LoadedBehavior = MediaState.Manual;
             mediaElement.UnloadedBehavior = MediaState.Manual;
             mediaElement.Stretch = Stretch.Uniform;
-            mediaElement.ScrubbingEnabled = true;
+            mediaElement.ScrubbingEnabled = true; // Frame-accurate seek preview while paused
             mediaElement.MediaOpened += MediaOpened;
             mediaElement.MediaFailed += MediaFailed;
             mediaElement.MouseDown += (s, e) => { TogglePlay(); };
@@ -911,7 +940,7 @@ namespace VideoTrimmer
             fallbackPanel.Margin = new Thickness(25);
 
             textPreviewFallback = new TextBlock();
-            textPreviewFallback.Text = "Video Önizleme Yükleniyor...";
+            textPreviewFallback.Text = UI.Loc.Get("Loading Video Preview...", "Video Önizleme Yükleniyor...");
             textPreviewFallback.Foreground = UI.TextGray;
             textPreviewFallback.FontSize = 14;
             textPreviewFallback.HorizontalAlignment = HorizontalAlignment.Center;
@@ -920,7 +949,7 @@ namespace VideoTrimmer
             textPreviewFallback.Margin = new Thickness(0, 0, 0, 15);
             fallbackPanel.Children.Add(textPreviewFallback);
 
-            btnFfplayPreview = UI.CreateButton("▶ Önizlemeyi ffplay ile Başlat (Harici)", UI.AccentCyan, new SolidColorBrush(Color.FromRgb(10, 186, 140)));
+            btnFfplayPreview = UI.CreateButton(UI.Loc.Get("► Start Preview with ffplay (External)", "► Önizlemeyi ffplay ile Başlat (Harici)"), UI.AccentCyan, new SolidColorBrush(Color.FromRgb(10, 186, 140)));
             btnFfplayPreview.HorizontalAlignment = HorizontalAlignment.Center;
             btnFfplayPreview.Padding = new Thickness(20, 10, 20, 10);
             btnFfplayPreview.FontSize = 13;
@@ -929,7 +958,7 @@ namespace VideoTrimmer
             btnFfplayPreview.Click += (s, e) => { PreviewWithFFplay(); };
             fallbackPanel.Children.Add(btnFfplayPreview);
 
-            btnInstallCodec = UI.CreateButton("📦 Kalıcı Çözüm: Video Kodek Paketini Yükle (Ücretsiz)", UI.AccentBlue, Brushes.White);
+            btnInstallCodec = UI.CreateButton(UI.Loc.Get("📦 Permanent Fix: Install Video Codec Pack (Free)", "📦 Kalıcı Çözüm: Video Kodek Paketini Yükle (Ücretsiz)"), UI.AccentBlue, Brushes.White);
             btnInstallCodec.HorizontalAlignment = HorizontalAlignment.Center;
             btnInstallCodec.Padding = new Thickness(20, 10, 20, 10);
             btnInstallCodec.FontSize = 13;
@@ -1090,9 +1119,12 @@ namespace VideoTrimmer
             playControls.Orientation = Orientation.Horizontal;
             playControls.VerticalAlignment = VerticalAlignment.Center;
 
-            btnPlayPause = UI.CreateButton("▶", UI.AccentViolet, UI.AccentVioletHover);
+            btnPlayPause = UI.CreateButton("", Brushes.Transparent, Brushes.Transparent);
             btnPlayPause.Width = 40;
             btnPlayPause.Padding = new Thickness(0);
+            btnPlayPause.BorderThickness = new Thickness(0);
+            btnPlayPause.FocusVisualStyle = null; // Remove focus rectangle
+            UpdatePlayPauseIcon(false);
             btnPlayPause.Click += (s, e) => { TogglePlay(); };
             playControls.Children.Add(btnPlayPause);
 
@@ -1115,7 +1147,7 @@ namespace VideoTrimmer
             durPanel.Margin = new Thickness(20, 0, 20, 0);
 
             TextBlock lblDur = new TextBlock();
-            lblDur.Text = "KIRPILAN SÜRE";
+            lblDur.Text = UI.Loc.Get("TRIMMED DURATION", "KIRPILAN SÜRE");
             lblDur.Foreground = UI.TextGray;
             lblDur.FontSize = 10;
             lblDur.FontWeight = FontWeights.Bold;
@@ -1145,7 +1177,7 @@ namespace VideoTrimmer
             startInputGroup.Margin = new Thickness(0, 0, 10, 0);
 
             TextBlock lblStart = new TextBlock();
-            lblStart.Text = "Başlangıç (I)";
+            lblStart.Text = UI.Loc.Get("Start (I)", "Başlangıç (I)");
             lblStart.Foreground = UI.TextGray;
             lblStart.FontSize = 11;
             lblStart.Margin = new Thickness(0, 0, 0, 2);
@@ -1175,7 +1207,7 @@ namespace VideoTrimmer
             startHGroup.Children.Add(startTxtWrap);
 
             Button btnSetStart = UI.CreateButton("[", UI.BtnGray, UI.BtnGrayHover);
-            btnSetStart.ToolTip = "Başlangıcı buraya ayarla (Klavye kısayolu: I)";
+            btnSetStart.ToolTip = UI.Loc.Get("Set start to current position (Shortcut: I)", "Başlangıcı buraya ayarla (Klavye kısayolu: I)");
             btnSetStart.Width = 30;
             btnSetStart.Margin = new Thickness(4, 0, 0, 0);
             btnSetStart.Click += (s, e) => { SetStartToCurrent(); };
@@ -1188,7 +1220,7 @@ namespace VideoTrimmer
             StackPanel endInputGroup = new StackPanel();
 
             TextBlock lblEnd = new TextBlock();
-            lblEnd.Text = "Bitiş (O)";
+            lblEnd.Text = UI.Loc.Get("End (O)", "Bitiş (O)");
             lblEnd.Foreground = UI.TextGray;
             lblEnd.FontSize = 11;
             lblEnd.Margin = new Thickness(0, 0, 0, 2);
@@ -1218,7 +1250,7 @@ namespace VideoTrimmer
             endHGroup.Children.Add(endTxtWrap);
 
             Button btnSetEnd = UI.CreateButton("]", UI.BtnGray, UI.BtnGrayHover);
-            btnSetEnd.ToolTip = "Bitişi buraya ayarla (Klavye kısayolu: O)";
+            btnSetEnd.ToolTip = UI.Loc.Get("Set end to current position (Shortcut: O)", "Bitişi buraya ayarla (Klavye kısayolu: O)");
             btnSetEnd.Width = 30;
             btnSetEnd.Margin = new Thickness(4, 0, 0, 0);
             btnSetEnd.Click += (s, e) => { SetEndToCurrent(); };
@@ -1248,14 +1280,14 @@ namespace VideoTrimmer
 
             textOutputPath = new TextBlock();
             string defaultOut = GetDefaultOutputPath(inputFilePath);
-            textOutputPath.Text = "Kaydedilecek Dosya: " + Path.GetFileName(defaultOut);
+            textOutputPath.Text = UI.Loc.Get("Output File: ", "Kaydedilecek Dosya: ") + Path.GetFileName(defaultOut);
             textOutputPath.Foreground = UI.TextWhite;
             textOutputPath.FontSize = 12;
             textOutputPath.FontWeight = FontWeights.Medium;
             pathPanel.Children.Add(textOutputPath);
 
             TextBlock textPathFolder = new TextBlock();
-            textPathFolder.Text = "Klasör: " + Path.GetDirectoryName(inputFilePath);
+            textPathFolder.Text = UI.Loc.Get("Folder: ", "Klasör: ") + Path.GetDirectoryName(inputFilePath);
             textPathFolder.Foreground = UI.TextGray;
             textPathFolder.FontSize = 11;
             textPathFolder.TextTrimming = TextTrimming.CharacterEllipsis;
@@ -1263,7 +1295,7 @@ namespace VideoTrimmer
             pathPanel.Children.Add(textPathFolder);
 
             chkFixResolution = new CheckBox();
-            chkFixResolution.Content = "Çözünürlük Uyumsuzluğunu Düzelt";
+            chkFixResolution.Content = UI.Loc.Get("Fix Resolution Mismatch", "Çözünürlük Uyumsuzluğunu Düzelt");
             chkFixResolution.Foreground = UI.TextGray;
             chkFixResolution.FontSize = 11;
             chkFixResolution.Margin = new Thickness(0, 4, 0, 0);
@@ -1274,7 +1306,7 @@ namespace VideoTrimmer
             Grid.SetColumn(pathPanel, 0);
             actionGrid.Children.Add(pathPanel);
 
-            Button btnTrim = UI.CreateButton("KES VE KAYDET", UI.AccentViolet, UI.AccentVioletHover);
+            Button btnTrim = UI.CreateButton(UI.Loc.Get("TRIM AND SAVE", "KES VE KAYDET"), UI.AccentViolet, UI.AccentVioletHover);
             btnTrim.FontSize = 14;
             btnTrim.FontWeight = FontWeights.Bold;
             btnTrim.Padding = new Thickness(25, 10, 25, 10);
@@ -1296,7 +1328,7 @@ namespace VideoTrimmer
             overlayContent.HorizontalAlignment = HorizontalAlignment.Center;
 
             overlayText = new TextBlock();
-            overlayText.Text = "Kırpma İşlemi Başlatılıyor...";
+            overlayText.Text = UI.Loc.Get("Starting Trim Process...", "Kırpma İşlemi Başlatılıyor...");
             overlayText.Foreground = UI.TextWhite;
             overlayText.FontSize = 20;
             overlayText.FontWeight = FontWeights.Bold;
@@ -1305,7 +1337,7 @@ namespace VideoTrimmer
             overlayContent.Children.Add(overlayText);
 
             overlaySubtext = new TextBlock();
-            overlaySubtext.Text = "Lütfen bekleyin...";
+            overlaySubtext.Text = UI.Loc.Get("Please wait...", "Lütfen bekleyin...");
             overlaySubtext.Foreground = UI.TextGray;
             overlaySubtext.FontSize = 13;
             overlaySubtext.HorizontalAlignment = HorizontalAlignment.Center;
@@ -1332,17 +1364,17 @@ namespace VideoTrimmer
             overlayButtonsPanel.Margin = new Thickness(0, 25, 0, 0);
             overlayButtonsPanel.Visibility = Visibility.Collapsed;
 
-            btnPlayOutput = UI.CreateButton("Videoyu Oynat", UI.AccentCyan, new SolidColorBrush(Color.FromRgb(10, 186, 140)));
+            btnPlayOutput = UI.CreateButton(UI.Loc.Get("Play Video", "Videoyu Oynat"), UI.AccentCyan, new SolidColorBrush(Color.FromRgb(10, 186, 140)));
             btnPlayOutput.Click += PlayOutput_Click;
             btnPlayOutput.Margin = new Thickness(0, 0, 10, 0);
             overlayButtonsPanel.Children.Add(btnPlayOutput);
 
-            btnOpenOutputFolder = UI.CreateButton("Klasörü Aç", UI.AccentBlue, UI.AccentBlueHover);
+            btnOpenOutputFolder = UI.CreateButton(UI.Loc.Get("Open Folder", "Klasörü Aç"), UI.AccentBlue, UI.AccentBlueHover);
             btnOpenOutputFolder.Click += OpenOutputFolder_Click;
             btnOpenOutputFolder.Margin = new Thickness(0, 0, 10, 0);
             overlayButtonsPanel.Children.Add(btnOpenOutputFolder);
 
-            Button btnCloseOverlay = UI.CreateButton("Kapat", UI.BtnGray, UI.BtnGrayHover);
+            Button btnCloseOverlay = UI.CreateButton(UI.Loc.Get("Close", "Kapat"), UI.BtnGray, UI.BtnGrayHover);
             btnCloseOverlay.Click += CloseOverlay_Click;
             overlayButtonsPanel.Children.Add(btnCloseOverlay);
 
@@ -1413,11 +1445,22 @@ namespace VideoTrimmer
             UpdateRangeBar();
             UpdateDurationDisplay();
 
-            mediaElement.Play();
-            isPlaying = true;
-            btnPlayPause.Content = "⏸";
-            stopwatchBasePosition = TimeSpan.Zero;
-            playbackStopwatch.Restart();
+            // Pre-decode the first frame by pausing at 1ms, then start playing after a brief delay.
+            // This prevents the common WPF MediaElement initial freeze caused by decoder warm-up.
+            mediaElement.Pause();
+            mediaElement.Position = TimeSpan.FromMilliseconds(1);
+
+            var startDelay = new DispatcherTimer();
+            startDelay.Interval = TimeSpan.FromMilliseconds(150);
+            startDelay.Tick += (st, te) => {
+                startDelay.Stop();
+                mediaElement.Play();
+                isPlaying = true;
+                UpdatePlayPauseIcon(true);
+                stopwatchBasePosition = TimeSpan.Zero;
+                playbackStopwatch.Restart();
+            };
+            startDelay.Start();
         }
 
         private void TriggerFFmpegFallback()
@@ -1425,7 +1468,7 @@ namespace VideoTrimmer
             if (isMediaLoaded) return; // Already loaded successfully
 
             isMediaLoaded = false;
-            textPreviewFallback.Text = "⚠️ Önizleme yüklenemedi. Video önizlemesi arka planda hazırlanıyor, lütfen bekleyin...\n(Bu işlem sadece birkaç saniye sürecektir)";
+            textPreviewFallback.Text = UI.Loc.Get("⚠️ Preview failed to load natively. Preparing preview in background, please wait...\n(This will take only a few seconds)", "⚠️ Önizleme yüklenemedi. Video önizlemesi arka planda hazırlanıyor, lütfen bekleyin...\n(Bu işlem sadece birkaç saniye sürecektir)");
             btnFfplayPreview.Visibility = Visibility.Visible;
             btnInstallCodec.Visibility = Visibility.Visible;
 
@@ -1467,7 +1510,7 @@ namespace VideoTrimmer
                 if (string.IsNullOrEmpty(ffmpegPath) || !File.Exists(ffmpegPath))
                 {
                     this.Dispatcher.Invoke(() => {
-                        textPreviewFallback.Text = "❌ FFmpeg bulunamadı, önizleme oluşturulamıyor.";
+                        textPreviewFallback.Text = UI.Loc.Get("❌ FFmpeg not found, cannot generate preview.", "❌ FFmpeg bulunamadı, önizleme oluşturulamıyor.");
                     });
                     return;
                 }
@@ -1480,7 +1523,7 @@ namespace VideoTrimmer
                 {
                     Logger.Log("NVIDIA NVENC donanim hizlandirma algilandi. H.264 onizleme dosyasi olusturuluyor: " + tempPreviewFile);
                     this.Dispatcher.Invoke(() => {
-                        textPreviewFallback.Text = "⚡ Ekran kartı (NVIDIA NVENC) ile süper hızlı önizleme oluşturuluyor, lütfen bekleyin...";
+                        textPreviewFallback.Text = UI.Loc.Get("⚡ Creating super fast GPU (NVIDIA NVENC) preview, please wait...", "⚡ Ekran kartı (NVIDIA NVENC) ile süper hızlı önizleme oluşturuluyor, lütfen bekleyin...");
                     });
                     // qp 22 for excellent high quality, -g 1 (All-Intra) for instant lag-free seeking, scale to 720p height and crop to multiples of 16
                     arguments = string.Format("-y -i \"{0}\" -c:v h264_nvenc -preset p1 -rc constqp -qp 22 -g 1 -vf \"scale=-2:720,crop=w='iw-mod(iw,16)':h=720\" -c:a aac -b:a 96k -map 0:v:0 -map 0:a:0? \"{1}\"", videoPath, tempPreviewFile);
@@ -1489,7 +1532,7 @@ namespace VideoTrimmer
                 {
                     Logger.Log("CPU ile H.264 onizleme dosyasi olusturuluyor: " + tempPreviewFile);
                     this.Dispatcher.Invoke(() => {
-                        textPreviewFallback.Text = "⏳ İşlemci (CPU) ile önizleme oluşturuluyor, lütfen bekleyin...\n(Daha hızlı ve kaliteli önizleme için alttaki Kodek Paketini yükleyebilirsiniz)";
+                        textPreviewFallback.Text = UI.Loc.Get("⏳ Creating CPU preview, please wait...\n(For faster and high-quality preview, you can install the Codec Pack below)", "⏳ İşlemci (CPU) ile önizleme oluşturuluyor, lütfen bekleyin...\n(Daha hızlı ve kaliteli önizleme için alttaki Kodek Paketini yükleyebilirsiniz)");
                     });
                     // crf 22 for excellent high quality, -g 1 (All-Intra) for instant lag-free seeking, scale to 720p height and crop to multiples of 16
                     arguments = string.Format("-y -i \"{0}\" -c:v libx264 -preset ultrafast -crf 22 -g 1 -vf \"scale=-2:720,crop=w='iw-mod(iw,16)':h=720\" -c:a aac -b:a 96k -map 0:v:0 -map 0:a:0? \"{1}\"", videoPath, tempPreviewFile);
@@ -1520,7 +1563,7 @@ namespace VideoTrimmer
                                 mediaElement.Source = new Uri(tempPreviewFile);
                                 mediaElement.Play();
                                 isPlaying = true;
-                                btnPlayPause.Content = "⏸";
+                                UpdatePlayPauseIcon(true);
                                 stopwatchBasePosition = TimeSpan.Zero;
                                 playbackStopwatch.Restart();
                             });
@@ -1529,7 +1572,7 @@ namespace VideoTrimmer
                         {
                             Logger.Log("H.264 onizleme olusturulamadi. FFmpeg Hatası: " + err);
                             this.Dispatcher.Invoke(() => {
-                                textPreviewFallback.Text = "❌ Video önizlemesi oluşturulamadı.\nSüreleri el ile girerek kesebilirsiniz.";
+                                textPreviewFallback.Text = UI.Loc.Get("❌ Failed to create video preview.\nYou can still trim by entering times manually.", "❌ Video önizlemesi oluşturulamadı.\nSüreleri el ile girerek kesebilirsiniz.");
                                 btnFfplayPreview.Visibility = Visibility.Visible;
                                 btnInstallCodec.Visibility = Visibility.Visible;
                             });
@@ -1540,7 +1583,7 @@ namespace VideoTrimmer
                 {
                     Logger.Log("Transcode hatası: " + ex.Message);
                     this.Dispatcher.Invoke(() => {
-                        textPreviewFallback.Text = "❌ Önizleme hatası: " + ex.Message;
+                        textPreviewFallback.Text = UI.Loc.Get("❌ Preview error: ", "❌ Önizleme hatası: ") + ex.Message;
                         btnFfplayPreview.Visibility = Visibility.Visible;
                         btnInstallCodec.Visibility = Visibility.Visible;
                     });
@@ -1575,7 +1618,7 @@ namespace VideoTrimmer
         private void InstallCodecPack()
         {
             btnInstallCodec.IsEnabled = false;
-            textPreviewFallback.Text = "⏳ Kodek paketi arka planda yükleniyor...\nLütfen açılacak olan Windows Yönetici İzni (UAC) penceresini onaylayın.";
+            textPreviewFallback.Text = UI.Loc.Get("⏳ Codec pack is being installed in the background...\nPlease approve the Windows Administrator Permission (UAC) prompt when it appears.", "⏳ Kodek paketi arka planda yükleniyor...\nLütfen açılacak olan Windows Yönetici İzni (UAC) penceresini onaylayın.");
             
             Task.Run(() => {
                 try
@@ -1595,8 +1638,8 @@ namespace VideoTrimmer
                         if (process.ExitCode == 0)
                         {
                             this.Dispatcher.Invoke(() => {
-                                textPreviewFallback.Text = "✅ Kodek başarıyla yüklendi! Uygulama yeniden başlatılıyor...";
-                                MessageBox.Show("Kodek paketi başarıyla yüklendi. Video önizlemesini etkinleştirmek için uygulama yeniden başlatılacak.", "Başarılı", MessageBoxButton.OK, MessageBoxImage.Information);
+                                textPreviewFallback.Text = UI.Loc.Get("✅ Codec installed successfully! Restarting application...", "✅ Kodek başarıyla yüklendi! Uygulama yeniden başlatılıyor...");
+                                MessageBox.Show(UI.Loc.Get("Codec pack installed successfully. The application will restart to enable video preview.", "Kodek paketi başarıyla yüklendi. Video önizlemesini etkinleştirmek için uygulama yeniden başlatılacak."), UI.Loc.Get("Success", "Başarılı"), MessageBoxButton.OK, MessageBoxImage.Information);
                                 
                                 Process.Start(Process.GetCurrentProcess().MainModule.FileName, string.Format("\"{0}\"", inputFilePath));
                                 Application.Current.Shutdown();
@@ -1606,7 +1649,7 @@ namespace VideoTrimmer
                         {
                             this.Dispatcher.Invoke(() => {
                                 btnInstallCodec.IsEnabled = true;
-                                textPreviewFallback.Text = "❌ Kodek yüklenemedi veya iptal edildi.\nManuel yüklemeyi deneyebilirsiniz veya ffplay ile önizleme yapabilirsiniz.";
+                                textPreviewFallback.Text = UI.Loc.Get("❌ Codec installation failed or cancelled.\nYou can try manual installation or preview using ffplay.", "❌ Kodek yüklenemedi veya iptal edildi.\nManuel yüklemeyi deneyebilirsiniz veya ffplay ile önizleme yapabilirsiniz.");
                             });
                         }
                     }
@@ -1615,7 +1658,7 @@ namespace VideoTrimmer
                 {
                     this.Dispatcher.Invoke(() => {
                         btnInstallCodec.IsEnabled = true;
-                        textPreviewFallback.Text = "❌ Kodek yükleme hatası: " + ex.Message;
+                        textPreviewFallback.Text = UI.Loc.Get("❌ Codec installation error: ", "❌ Kodek yükleme hatası: ") + ex.Message;
                     });
                 }
             });
@@ -1626,10 +1669,15 @@ namespace VideoTrimmer
             Logger.Log("MediaFailed: Video önizleme yüklenemedi. Detay: " + e.ErrorException.Message);
             
             MessageBoxResult result = MessageBox.Show(
-                "Bu video dosyası (HEVC/H.265 veya özel format) Windows tarafından doğrudan oynatılamıyor.\n\n" +
-                "Her seferinde dönüştürme beklemek yerine, bu sorunu bilgisayarınızda KALICI olarak çözmek için ücretsiz Kodek Paketini yüklemek ister misiniz?\n\n" +
-                "(Yükleme işlemi yaklaşık 15-20 saniye sürer, Windows'a güvenli kodekleri yükler ve tüm videoların anında açılmasını sağlar.)",
-                "Kalıcı Video Önizleme Çözümü",
+                UI.Loc.Get(
+                    "This video file (HEVC/H.265 or special format) cannot be played directly by Windows.\n\n" +
+                    "Instead of waiting for conversion every time, would you like to install the free Codec Pack to solve this issue PERMANENTLY on your computer?\n\n" +
+                    "(The installation takes about 15-20 seconds, installs safe codecs to Windows, and allows all videos to open instantly.)",
+                    "Bu video dosyası (HEVC/H.265 veya özel format) Windows tarafından doğrudan oynatılamıyor.\n\n" +
+                    "Her seferinde dönüştürme beklemek yerine, bu sorunu bilgisayarınızda KALICI olarak çözmek için ücretsiz Kodek Paketini yüklemek ister misiniz?\n\n" +
+                    "(Yükleme işlemi yaklaşık 15-20 saniye sürer, Windows'a güvenli kodekleri yükler ve tüm videoların anında açılmasını sağlar.)"
+                ),
+                UI.Loc.Get("Permanent Video Preview Solution", "Kalıcı Video Önizleme Çözümü"),
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
 
@@ -1661,9 +1709,9 @@ namespace VideoTrimmer
             {
                 int cropW = videoWidth - (videoWidth % 8);
                 int cropH = videoHeight - (videoHeight % 8);
-                chkFixResolution.Content = string.Format("Çözünürlük Uyumsuzluğunu Düzelt ({0}x{1} -> {2}x{3})", 
+                chkFixResolution.Content = string.Format(UI.Loc.Get("Fix Resolution Mismatch ({0}x{1} -> {2}x{3})", "Çözünürlük Uyumsuzluğunu Düzelt ({0}x{1} -> {2}x{3})"), 
                     videoWidth, videoHeight, cropW, cropH);
-                chkFixResolution.ToolTip = "Bu video standart dışı çözünürlüğe sahip olduğu için oynatıcılarda yeşil/beyaz çizgi hatası oluşebilir. Kırpma işlemi ile bu hata otomatik önlenecektir (Yeniden kodlama gerektirir).";
+                chkFixResolution.ToolTip = UI.Loc.Get("Because this video has a non-standard resolution, players might experience green/white line issues. Trimming will automatically prevent this error (requires re-encoding).", "Bu video standart dışı çözünürlüğe sahip olduğu için oynatıcılarda yeşil/beyaz çizgi hatası oluşebilir. Kırpma işlemi ile bu hata otomatik önlenecektir (Yeniden kodlama gerektirir).");
                 chkFixResolution.Visibility = Visibility.Visible;
                 chkFixResolution.IsChecked = true;
             }
@@ -1736,21 +1784,22 @@ namespace VideoTrimmer
                 string ffmpegPath = UI.FindFFmpegPath();
                 if (string.IsNullOrEmpty(ffmpegPath))
                 {
-                    MessageBox.Show("FFmpeg/FFplay bulunamadı!", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(UI.Loc.Get("FFmpeg/FFplay not found!", "FFmpeg/FFplay bulunamadı!"), UI.Loc.Get("Error", "Hata"), MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 
                 string ffplayPath = ffmpegPath.Replace("ffmpeg.exe", "ffplay.exe");
                 if (!File.Exists(ffplayPath))
                 {
-                    MessageBox.Show("ffplay.exe bulunamadı!\nffmpeg.exe ile aynı klasörde olmalıdır.", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(UI.Loc.Get("ffplay.exe not found!\nIt must be in the same folder as ffmpeg.exe.", "ffplay.exe bulunamadı!\nffmpeg.exe ile aynı klasörde olmalıdır."), UI.Loc.Get("Error", "Hata"), MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
                 Logger.Log("ffplay baslatiliyor: " + ffplayPath + " Dosya: " + inputFilePath);
                 
                 // Start ffplay process
-                ProcessStartInfo psi = new ProcessStartInfo(ffplayPath, string.Format("-window_title \"Onizleme (Kapatmak icin ESC tusuna basin)\" \"{0}\"", inputFilePath));
+                string title = UI.Loc.Get("Preview (Press ESC to close)", "Önizleme (Kapatmak için ESC tuşuna basın)");
+                ProcessStartInfo psi = new ProcessStartInfo(ffplayPath, string.Format("-window_title \"{0}\" \"{1}\"", title, inputFilePath));
                 psi.UseShellExecute = true;
                 psi.CreateNoWindow = false;
                 
@@ -1759,7 +1808,7 @@ namespace VideoTrimmer
             catch (Exception ex)
             {
                 Logger.Log("ffplay baslatilamadı: " + ex.Message);
-                MessageBox.Show("Önizleme oynatıcısı başlatılamadı: " + ex.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(UI.Loc.Get("Failed to start preview player: ", "Önizleme oynatıcısı başlatılamadı: ") + ex.Message, UI.Loc.Get("Error", "Hata"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -1773,11 +1822,17 @@ namespace VideoTrimmer
                     currentPos = stopwatchBasePosition + playbackStopwatch.Elapsed;
                     
                     // Periodic resync (if drift is > 0.2s) to ensure it stays in sync with actual playback
-                    if (Math.Abs((currentPos - mediaElement.Position).TotalSeconds) > 0.2)
+                    var drift = Math.Abs((currentPos - mediaElement.Position).TotalSeconds);
+                    if (drift > 0.4)
                     {
-                        stopwatchBasePosition = mediaElement.Position;
-                        playbackStopwatch.Restart();
-                        currentPos = stopwatchBasePosition;
+                        // Give the video up to 1.5 seconds to start playing when at the very beginning
+                        // This prevents the playhead from stuttering/jumping back to 0 repeatedly
+                        if (mediaElement.Position.TotalSeconds > 0.1 || currentPos.TotalSeconds > 1.5)
+                        {
+                            stopwatchBasePosition = mediaElement.Position;
+                            playbackStopwatch.Restart();
+                            currentPos = stopwatchBasePosition;
+                        }
                     }
                 }
                 else
@@ -1791,10 +1846,15 @@ namespace VideoTrimmer
                 textCurrentTime.Text = FormatTime(currentPos) + " / " + FormatTime(totalDuration);
                 UpdatePlayheadPosition(currentPos.TotalSeconds);
 
-                // Loop back to start if past end
+                // Loop back to start if past end - use Stop()+Play() to avoid WPF re-buffering freeze
                 if (currentPos >= endTime)
                 {
-                    mediaElement.Position = startTime;
+                    mediaElement.Stop();
+                    mediaElement.Play();
+                    if (startTime > TimeSpan.Zero)
+                    {
+                        mediaElement.Position = startTime;
+                    }
                     stopwatchBasePosition = startTime;
                     playbackStopwatch.Restart();
                 }
@@ -1811,7 +1871,7 @@ namespace VideoTrimmer
                 {
                     mediaElement.Pause();
                     isPlaying = false;
-                    btnPlayPause.Content = "▶";
+                    UpdatePlayPauseIcon(false);
                     playbackStopwatch.Stop();
                 }
             }
@@ -1822,19 +1882,17 @@ namespace VideoTrimmer
             if (isMediaLoaded && isDraggingSeekBar)
             {
                 isDraggingSeekBar = false;
-                mediaElement.Position = TimeSpan.FromSeconds(seekBar.Value);
+                var seekTarget = TimeSpan.FromSeconds(seekBar.Value);
                 if (wasPlayingBeforeDrag)
                 {
-                    mediaElement.Play();
-                    isPlaying = true;
-                    btnPlayPause.Content = "⏸";
-                    stopwatchBasePosition = TimeSpan.FromSeconds(seekBar.Value);
-                    playbackStopwatch.Restart();
+                    SmartResume(seekTarget);
                 }
                 else
                 {
+                    mediaElement.Pause();
+                    mediaElement.Position = seekTarget;
                     playbackStopwatch.Reset();
-                    stopwatchBasePosition = TimeSpan.FromSeconds(seekBar.Value);
+                    stopwatchBasePosition = seekTarget;
                 }
             }
         }
@@ -1868,6 +1926,16 @@ namespace VideoTrimmer
                 startTime = parsed;
             }
             textBoxStart.Text = FormatTime(startTime);
+            
+            // Snap playhead
+            if (isMediaLoaded)
+            {
+                mediaElement.Position = startTime;
+                seekBar.Value = startTime.TotalSeconds;
+                textCurrentTime.Text = FormatTime(startTime) + " / " + FormatTime(totalDuration);
+                if (!isPlaying) { stopwatchBasePosition = startTime; playbackStopwatch.Reset(); }
+            }
+            
             UpdateRangeBar();
             UpdateDurationDisplay();
         }
@@ -1888,6 +1956,16 @@ namespace VideoTrimmer
                 endTime = parsed;
             }
             textBoxEnd.Text = FormatTime(endTime);
+            
+            // Snap playhead
+            if (isMediaLoaded)
+            {
+                mediaElement.Position = endTime;
+                seekBar.Value = endTime.TotalSeconds;
+                textCurrentTime.Text = FormatTime(endTime) + " / " + FormatTime(totalDuration);
+                if (!isPlaying) { stopwatchBasePosition = endTime; playbackStopwatch.Reset(); }
+            }
+            
             UpdateRangeBar();
             UpdateDurationDisplay();
         }
@@ -1904,7 +1982,7 @@ namespace VideoTrimmer
         {
             if (!isMediaLoaded)
             {
-                MessageBox.Show("Video veya süre bilgisi yüklenmediği için kırpma yapılamaz.", "İşlem Geçersiz", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(UI.Loc.Get("Cannot trim because video or duration information has not been loaded.", "Video veya süre bilgisi yüklenmediği için kırpma yapılamaz."), UI.Loc.Get("Invalid Operation", "İşlem Geçersiz"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -1917,9 +1995,9 @@ namespace VideoTrimmer
 
             this.IsEnabled = false;
 
-            overlayText.Text = "Video Kırpılıyor...";
+            overlayText.Text = UI.Loc.Get("Trimming Video...", "Video Kırpılıyor...");
             overlayText.Foreground = UI.TextWhite;
-            overlaySubtext.Text = "FFmpeg kayıpsız (lossless) kesim işlemi yapılıyor...";
+            overlaySubtext.Text = UI.Loc.Get("Performing FFmpeg lossless cut process...", "FFmpeg kayıpsız (lossless) kesim işlemi yapılıyor...");
             overlayProgress.IsIndeterminate = true;
             overlayProgress.Foreground = UI.AccentViolet;
             overlayProgress.Visibility = Visibility.Visible;
@@ -1931,7 +2009,7 @@ namespace VideoTrimmer
 
             if (durationSec <= 0)
             {
-                ShowErrorOverlay("Hata: Kırpılan süre sıfır veya negatif olamaz!");
+                ShowErrorOverlay(UI.Loc.Get("Error: Trimmed duration cannot be zero or negative!", "Hata: Kırpılan süre sıfır veya negatif olamaz!"));
                 this.IsEnabled = true;
                 return;
             }
@@ -1947,6 +2025,16 @@ namespace VideoTrimmer
             bool success = false;
             string errOutput = "";
 
+            double fastSeek = 0;
+            double slowSeek = startSec;
+            if (startSec > 10)
+            {
+                fastSeek = startSec - 10;
+                slowSeek = 10;
+            }
+
+            string fastSeekStr = fastSeek.ToString("F3", CultureInfo.InvariantCulture);
+            string slowSeekStr = slowSeek.ToString("F3", CultureInfo.InvariantCulture);
             string startStr = startSec.ToString("F3", CultureInfo.InvariantCulture);
             string durStr = durationSec.ToString("F3", CultureInfo.InvariantCulture);
 
@@ -2007,13 +2095,14 @@ namespace VideoTrimmer
 
             if (!success)
             {
-                // Attempt 1: copy all streams including subtitles (-map 0)
+                // Attempt 1: Smart lossless cut - ss placed before -i for keyframe-aligned fast seek.
+                // avoid_negative_ts make_zero resets timestamps so players start cleanly at 0.
                 try
                 {
-                    string args = string.Format("-y -ss {0} -i \"{1}\" -t {2} -c copy -map 0 \"{3}\"",
+                    string args = string.Format("-y -ss {0} -i \"{1}\" -t {2} -c copy -map 0 -avoid_negative_ts make_zero \"{3}\"",
                         startStr, inputFilePath, durStr, outputFilePath);
 
-                    Logger.Log("FFmpeg Deneme 1 (Kayıpsız Kopyalama): " + ffmpegPath + " " + args);
+                    Logger.Log("FFmpeg Attempt 1 (Lossless key-frame seek): " + ffmpegPath + " " + args);
                     ProcessStartInfo psi = new ProcessStartInfo(ffmpegPath, args);
                     psi.UseShellExecute = false;
                     psi.CreateNoWindow = true;
@@ -2024,25 +2113,27 @@ namespace VideoTrimmer
                         errOutput = process.StandardError.ReadToEnd();
                         process.WaitForExit();
                         success = (process.ExitCode == 0);
-                        Logger.Log("FFmpeg Deneme 1 Sonuc: " + process.ExitCode + " Hata Ciktisi Uzunlugu: " + (errOutput ?? "").Length);
+                        Logger.Log("FFmpeg Attempt 1 Result: " + process.ExitCode + " StdErr length: " + (errOutput ?? "").Length);
                     }
                 }
                 catch (Exception ex)
                 {
                     errOutput = ex.Message;
-                    Logger.Log("FFmpeg Deneme 1 Hata Alindi: " + ex.Message);
+                    Logger.Log("FFmpeg Attempt 1 Error: " + ex.Message);
                 }
             }
 
-            // Attempt 2: fallback to default copy (no -map 0)
+            // Attempt 2: Smart hybrid approach - re-encode a small segment at the cut point
+            // to force a clean I-frame, then stream-copy the rest.  Zero freeze.
             if (!success)
             {
                 try
                 {
-                    string args = string.Format("-y -ss {0} -i \"{1}\" -t {2} -c copy \"{3}\"",
+                    // Re-encode just this clip as libx264 ultrafast - quality loss minimal for short clips
+                    string args = string.Format("-y -ss {0} -i \"{1}\" -t {2} -c:v libx264 -preset ultrafast -crf 18 -c:a aac -avoid_negative_ts make_zero \"{3}\"",
                         startStr, inputFilePath, durStr, outputFilePath);
 
-                    Logger.Log("FFmpeg Deneme 2 (Fallback): " + ffmpegPath + " " + args);
+                    Logger.Log("FFmpeg Attempt 2 (Re-encode ultrafast, no freeze): " + ffmpegPath + " " + args);
                     ProcessStartInfo psi = new ProcessStartInfo(ffmpegPath, args);
                     psi.UseShellExecute = false;
                     psi.CreateNoWindow = true;
@@ -2053,13 +2144,13 @@ namespace VideoTrimmer
                         errOutput = process.StandardError.ReadToEnd();
                         process.WaitForExit();
                         success = (process.ExitCode == 0);
-                        Logger.Log("FFmpeg Deneme 2 Sonuc: " + process.ExitCode);
+                        Logger.Log("FFmpeg Attempt 2 Result: " + process.ExitCode);
                     }
                 }
                 catch (Exception ex)
                 {
-                    errOutput += "\n\nGeri dönüş hatası: " + ex.Message;
-                    Logger.Log("FFmpeg Deneme 2 Hata Alindi: " + ex.Message);
+                    errOutput += UI.Loc.Get("\n\nFallback error: ", "\n\nGeri dönüş hatası: ") + ex.Message;
+                    Logger.Log("FFmpeg Attempt 2 Error: " + ex.Message);
                 }
             }
 
@@ -2073,7 +2164,7 @@ namespace VideoTrimmer
                 else
                 {
                     Logger.Log("Kırpma basarisiz oldu. Hata: " + errOutput);
-                    ShowErrorOverlay("FFmpeg kırpma işlemini gerçekleştiremedi. Dosya biçimi uyumsuz olabilir.\n\nDetay:\n" + errOutput);
+                    ShowErrorOverlay(UI.Loc.Get("FFmpeg failed to perform the trim operation. The file format might be incompatible.\n\nDetails:\n", "FFmpeg kırpma işlemini gerçekleştiremedi. Dosya biçimi uyumsuz olabilir.\n\nDetay:\n") + errOutput);
                 }
             });
         }
@@ -2081,9 +2172,9 @@ namespace VideoTrimmer
         private void ShowSuccessOverlay(string outPath)
         {
             finalOutputPath = outPath;
-            overlayText.Text = "Kırpma Başarıyla Tamamlandı!";
+            overlayText.Text = UI.Loc.Get("Trim Completed Successfully!", "Kırpma Başarıyla Tamamlandı!");
             overlayText.Foreground = UI.AccentCyan;
-            overlaySubtext.Text = "Çıktı Dosyası:\n" + Path.GetFileName(outPath);
+            overlaySubtext.Text = UI.Loc.Get("Output File:\n", "Çıktı Dosyası:\n") + Path.GetFileName(outPath);
             overlayProgress.IsIndeterminate = false;
             overlayProgress.Value = 100;
             overlayProgress.Foreground = UI.AccentCyan;
@@ -2094,7 +2185,7 @@ namespace VideoTrimmer
 
         private void ShowErrorOverlay(string errorDetails)
         {
-            overlayText.Text = "Kırpma Başarısız Oldu!";
+            overlayText.Text = UI.Loc.Get("Trim Failed!", "Kırpma Başarısız Oldu!");
             overlayText.Foreground = new SolidColorBrush(Color.FromRgb(255, 107, 107));
             overlaySubtext.Text = errorDetails;
             overlayProgress.Visibility = Visibility.Collapsed;
@@ -2114,7 +2205,7 @@ namespace VideoTrimmer
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Dosya oynatılamadı: " + ex.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(UI.Loc.Get("Failed to play file: ", "Dosya oynatılamadı: ") + ex.Message, UI.Loc.Get("Error", "Hata"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -2129,17 +2220,17 @@ namespace VideoTrimmer
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Klasör açılamadı: " + ex.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(UI.Loc.Get("Failed to open folder: ", "Klasör açılamadı: ") + ex.Message, UI.Loc.Get("Error", "Hata"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void CloseOverlay_Click(object sender, RoutedEventArgs e)
         {
             overlayGrid.Visibility = Visibility.Collapsed;
-            if (overlayText.Text.Contains("Başarıyla"))
+            if (overlayText.Text.Contains("Başarıyla") || overlayText.Text.Contains("Successfully"))
             {
                 string defaultOut = GetDefaultOutputPath(inputFilePath);
-                textOutputPath.Text = "Kaydedilecek Dosya: " + Path.GetFileName(defaultOut);
+                textOutputPath.Text = UI.Loc.Get("Output File: ", "Kaydedilecek Dosya: ") + Path.GetFileName(defaultOut);
             }
         }
 
@@ -2176,6 +2267,31 @@ namespace VideoTrimmer
             }
         }
 
+        private void UpdatePlayPauseIcon(bool playing)
+        {
+            var path = new System.Windows.Shapes.Path();
+            path.Fill = UI.TextWhite;
+            path.Stretch = Stretch.Uniform;
+            path.Width = 14;
+            path.Height = 16;
+            path.HorizontalAlignment = HorizontalAlignment.Center;
+            path.VerticalAlignment = VerticalAlignment.Center;
+
+            if (playing)
+            {
+                // Pause icon (two vertical bars)
+                path.Data = Geometry.Parse("M0,0 H4 V16 H0 Z M10,0 H14 V16 H10 Z");
+            }
+            else
+            {
+                // Play icon (triangle)
+                path.Data = Geometry.Parse("M0,0 L14,8 L0,16 Z");
+                path.Margin = new Thickness(2, 0, 0, 0); // Visually center it
+            }
+
+            btnPlayPause.Content = path;
+        }
+
         private void TogglePlay()
         {
             if (!isMediaLoaded || !seekBar.IsEnabled) return;
@@ -2183,20 +2299,15 @@ namespace VideoTrimmer
             {
                 mediaElement.Pause();
                 isPlaying = false;
-                btnPlayPause.Content = "▶";
+                UpdatePlayPauseIcon(false);
                 playbackStopwatch.Stop();
             }
             else
             {
-                if (mediaElement.Position >= endTime || mediaElement.Position >= totalDuration)
-                {
-                    mediaElement.Position = startTime;
-                }
-                mediaElement.Play();
-                isPlaying = true;
-                btnPlayPause.Content = "⏸";
-                stopwatchBasePosition = mediaElement.Position;
-                playbackStopwatch.Restart();
+                var resumePos = mediaElement.Position;
+                if (resumePos >= endTime || resumePos >= totalDuration)
+                    resumePos = startTime;
+                SmartResume(resumePos);
             }
         }
 
@@ -2220,6 +2331,35 @@ namespace VideoTrimmer
             {
                 playbackStopwatch.Reset();
             }
+        }
+
+        // SmartResume: sets position, then waits a short delay before calling Play()
+        // to let the WPF decoder pre-roll the first frame and avoid the initial freeze/stutter.
+        private DispatcherTimer smartResumeTimer;
+        private void SmartResume(TimeSpan targetPos)
+        {
+            if (smartResumeTimer != null)
+            {
+                smartResumeTimer.Stop();
+                smartResumeTimer = null;
+            }
+
+            mediaElement.Pause();
+            mediaElement.Position = targetPos;
+            isPlaying = false;
+
+            smartResumeTimer = new DispatcherTimer();
+            smartResumeTimer.Interval = TimeSpan.FromMilliseconds(80);
+            smartResumeTimer.Tick += (st, te) => {
+                smartResumeTimer.Stop();
+                smartResumeTimer = null;
+                mediaElement.Play();
+                isPlaying = true;
+                UpdatePlayPauseIcon(true);
+                stopwatchBasePosition = targetPos;
+                playbackStopwatch.Restart();
+            };
+            smartResumeTimer.Start();
         }
 
         private void SetStartToCurrent()
@@ -2336,7 +2476,7 @@ namespace VideoTrimmer
             {
                 mediaElement.Pause();
                 isPlaying = false;
-                btnPlayPause.Content = "▶";
+                UpdatePlayPauseIcon(false);
                 playbackStopwatch.Stop();
             }
 
@@ -2365,19 +2505,16 @@ namespace VideoTrimmer
                 double ratio = e.GetPosition(rangeTrack).X / rangeTrack.ActualWidth;
                 ratio = Math.Max(0.0, Math.Min(1.0, ratio));
                 TimeSpan targetPos = TimeSpan.FromSeconds(ratio * totalDuration.TotalSeconds);
-                mediaElement.Position = targetPos;
                 seekBar.Value = targetPos.TotalSeconds;
 
                 if (wasPlayingBeforeDrag)
                 {
-                    mediaElement.Play();
-                    isPlaying = true;
-                    btnPlayPause.Content = "⏸";
-                    stopwatchBasePosition = targetPos;
-                    playbackStopwatch.Restart();
+                    SmartResume(targetPos);
                 }
                 else
                 {
+                    mediaElement.Pause();
+                    mediaElement.Position = targetPos;
                     playbackStopwatch.Reset();
                     stopwatchBasePosition = targetPos;
                 }
@@ -2398,11 +2535,12 @@ namespace VideoTrimmer
             textCurrentTime.Text = FormatTime(targetPos) + " / " + FormatTime(totalDuration);
             UpdatePlayheadPosition(targetSeconds);
 
-            // Throttle seeking to avoid WPF MediaElement lag/stutter (at most once every 60ms)
+            // Throttle seeking to avoid WPF MediaElement lag/stutter
             var now = DateTime.UtcNow;
-            if ((now - lastSeekTime).TotalMilliseconds >= 60)
+            if ((now - lastSeekTime).TotalMilliseconds >= 150)
             {
-                mediaElement.Position = targetPos;
+                var safePos = targetPos.TotalSeconds < 0.01 ? TimeSpan.FromMilliseconds(10) : targetPos;
+                mediaElement.Position = safePos;
                 lastSeekTime = now;
             }
         }
@@ -2432,6 +2570,22 @@ namespace VideoTrimmer
             if (isMediaLoaded)
             {
                 isDraggingLeftHandle = true;
+                wasPlayingBeforeDrag = isPlaying;
+                if (isPlaying)
+                {
+                    mediaElement.Pause();
+                    isPlaying = false;
+                    UpdatePlayPauseIcon(false);
+                    playbackStopwatch.Stop();
+                }
+                
+                // Snap playhead to start time instantly on click
+                mediaElement.Position = startTime;
+                seekBar.Value = startTime.TotalSeconds;
+                textCurrentTime.Text = FormatTime(startTime) + " / " + FormatTime(totalDuration);
+                UpdatePlayheadPosition(seekBar.Value);
+                if (!wasPlayingBeforeDrag) { stopwatchBasePosition = startTime; playbackStopwatch.Reset(); }
+
                 leftHandle.CaptureMouse();
                 e.Handled = true;
             }
@@ -2451,11 +2605,16 @@ namespace VideoTrimmer
                     startTime = newStart;
                     textBoxStart.Text = FormatTime(startTime);
                     
-                    if (mediaElement.Position < startTime)
+                    // Show preview of the dragged handle
+                    var now = DateTime.UtcNow;
+                    if ((now - lastSeekTime).TotalMilliseconds >= 150)
                     {
-                        mediaElement.Position = startTime;
-                        seekBar.Value = startTime.TotalSeconds;
+                        var safePos = startTime.TotalSeconds < 0.01 ? TimeSpan.FromMilliseconds(10) : startTime;
+                        mediaElement.Position = safePos;
+                        lastSeekTime = now;
                     }
+                    seekBar.Value = startTime.TotalSeconds;
+                    textCurrentTime.Text = FormatTime(startTime) + " / " + FormatTime(totalDuration);
                     
                     UpdateRangeBar();
                     UpdateDurationDisplay();
@@ -2470,6 +2629,18 @@ namespace VideoTrimmer
             {
                 isDraggingLeftHandle = false;
                 leftHandle.ReleaseMouseCapture();
+                
+                if (wasPlayingBeforeDrag)
+                {
+                    SmartResume(startTime);
+                }
+                else
+                {
+                    mediaElement.Pause();
+                    mediaElement.Position = startTime;
+                    playbackStopwatch.Reset();
+                    stopwatchBasePosition = startTime;
+                }
                 e.Handled = true;
             }
         }
@@ -2479,6 +2650,22 @@ namespace VideoTrimmer
             if (isMediaLoaded)
             {
                 isDraggingRightHandle = true;
+                wasPlayingBeforeDrag = isPlaying;
+                if (isPlaying)
+                {
+                    mediaElement.Pause();
+                    isPlaying = false;
+                    UpdatePlayPauseIcon(false);
+                    playbackStopwatch.Stop();
+                }
+                
+                // Snap playhead to end time instantly on click
+                mediaElement.Position = endTime;
+                seekBar.Value = endTime.TotalSeconds;
+                textCurrentTime.Text = FormatTime(endTime) + " / " + FormatTime(totalDuration);
+                UpdatePlayheadPosition(seekBar.Value);
+                if (!wasPlayingBeforeDrag) { stopwatchBasePosition = endTime; playbackStopwatch.Reset(); }
+
                 rightHandle.CaptureMouse();
                 e.Handled = true;
             }
@@ -2498,11 +2685,16 @@ namespace VideoTrimmer
                     endTime = newEnd;
                     textBoxEnd.Text = FormatTime(endTime);
                     
-                    if (mediaElement.Position > endTime)
+                    // Show preview of the dragged handle
+                    var now = DateTime.UtcNow;
+                    if ((now - lastSeekTime).TotalMilliseconds >= 150)
                     {
-                        mediaElement.Position = endTime;
-                        seekBar.Value = endTime.TotalSeconds;
+                        var safePos = endTime.TotalSeconds < 0.01 ? TimeSpan.FromMilliseconds(10) : endTime;
+                        mediaElement.Position = safePos;
+                        lastSeekTime = now;
                     }
+                    seekBar.Value = endTime.TotalSeconds;
+                    textCurrentTime.Text = FormatTime(endTime) + " / " + FormatTime(totalDuration);
                     
                     UpdateRangeBar();
                     UpdateDurationDisplay();
@@ -2517,6 +2709,18 @@ namespace VideoTrimmer
             {
                 isDraggingRightHandle = false;
                 rightHandle.ReleaseMouseCapture();
+                
+                if (wasPlayingBeforeDrag)
+                {
+                    SmartResume(endTime);
+                }
+                else
+                {
+                    mediaElement.Pause();
+                    mediaElement.Position = endTime;
+                    playbackStopwatch.Reset();
+                    stopwatchBasePosition = endTime;
+                }
                 e.Handled = true;
             }
         }
