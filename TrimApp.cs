@@ -67,6 +67,38 @@ namespace VideoTrimmer
         public static readonly Brush TextWhite = Brushes.White;
         public static readonly Brush TextGray = new SolidColorBrush(Color.FromRgb(160, 160, 176)); // #A0A0B0
 
+        public static System.Windows.Media.ImageSource GetLogoImageSource()
+        {
+            try
+            {
+                using (var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("app_logo.png"))
+                {
+                    if (stream != null)
+                    {
+                        var bitmap = new System.Windows.Media.Imaging.BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.StreamSource = stream;
+                        bitmap.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                        bitmap.EndInit();
+                        return bitmap;
+                    }
+                }
+            }
+            catch { }
+
+            try
+            {
+                string logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app_logo.png");
+                if (File.Exists(logoPath))
+                {
+                    return new System.Windows.Media.Imaging.BitmapImage(new Uri(logoPath));
+                }
+            }
+            catch { }
+
+            return null;
+        }
+
         public static Button CreateButton(string content, Brush background, Brush hoverBackground)
         {
             Button btn = new Button();
@@ -118,13 +150,13 @@ namespace VideoTrimmer
             titlePanel.VerticalAlignment = VerticalAlignment.Center;
             titlePanel.Margin = new Thickness(12, 0, 0, 0);
 
-            string logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app_logo.png");
-            if (File.Exists(logoPath))
+            var logoSrc = GetLogoImageSource();
+            if (logoSrc != null)
             {
                 try
                 {
                     Image img = new Image();
-                    img.Source = new System.Windows.Media.Imaging.BitmapImage(new Uri(logoPath));
+                    img.Source = logoSrc;
                     img.Width = 16;
                     img.Height = 16;
                     img.Margin = new Thickness(0, 0, 8, 0);
@@ -192,12 +224,12 @@ namespace VideoTrimmer
             chrome.UseAeroCaptionButtons = false;
             WindowChrome.SetWindowChrome(window, chrome);
 
-            string logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app_logo.png");
-            if (File.Exists(logoPath))
+            var logoSrc = GetLogoImageSource();
+            if (logoSrc != null)
             {
                 try
                 {
-                    window.Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(logoPath));
+                    window.Icon = logoSrc;
                 }
                 catch { }
             }
@@ -304,13 +336,13 @@ namespace VideoTrimmer
             headerGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
             headerGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
 
-            string logoPathForSetup = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app_logo.png");
-            if (File.Exists(logoPathForSetup))
+            var logoSrcForSetup = UI.GetLogoImageSource();
+            if (logoSrcForSetup != null)
             {
                 try
                 {
                     Image imgLogo = new Image();
-                    imgLogo.Source = new System.Windows.Media.Imaging.BitmapImage(new Uri(logoPathForSetup));
+                    imgLogo.Source = logoSrcForSetup;
                     imgLogo.Width = 48;
                     imgLogo.Height = 48;
                     imgLogo.Margin = new Thickness(0, 0, 15, 0);
