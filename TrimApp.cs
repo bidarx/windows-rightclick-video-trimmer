@@ -113,16 +113,37 @@ namespace VideoTrimmer
             titleBar.ColumnDefinitions.Add(colTitle);
             titleBar.ColumnDefinitions.Add(colButtons);
 
+            StackPanel titlePanel = new StackPanel();
+            titlePanel.Orientation = Orientation.Horizontal;
+            titlePanel.VerticalAlignment = VerticalAlignment.Center;
+            titlePanel.Margin = new Thickness(12, 0, 0, 0);
+
+            string logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app_logo.png");
+            if (File.Exists(logoPath))
+            {
+                try
+                {
+                    Image img = new Image();
+                    img.Source = new System.Windows.Media.Imaging.BitmapImage(new Uri(logoPath));
+                    img.Width = 16;
+                    img.Height = 16;
+                    img.Margin = new Thickness(0, 0, 8, 0);
+                    titlePanel.Children.Add(img);
+                }
+                catch { }
+            }
+
             TextBlock textBlock = new TextBlock();
             textBlock.Text = titleText;
             textBlock.Foreground = TextWhite;
             textBlock.VerticalAlignment = VerticalAlignment.Center;
-            textBlock.Margin = new Thickness(12, 0, 0, 0);
             textBlock.FontFamily = new FontFamily("Segoe UI");
             textBlock.FontWeight = FontWeights.Medium;
             textBlock.FontSize = 12;
-            Grid.SetColumn(textBlock, 0);
-            titleBar.Children.Add(textBlock);
+            titlePanel.Children.Add(textBlock);
+
+            Grid.SetColumn(titlePanel, 0);
+            titleBar.Children.Add(titlePanel);
 
             StackPanel buttonsPanel = new StackPanel();
             buttonsPanel.Orientation = Orientation.Horizontal;
@@ -170,6 +191,16 @@ namespace VideoTrimmer
             chrome.ResizeBorderThickness = new Thickness(6);
             chrome.UseAeroCaptionButtons = false;
             WindowChrome.SetWindowChrome(window, chrome);
+
+            string logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app_logo.png");
+            if (File.Exists(logoPath))
+            {
+                try
+                {
+                    window.Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(logoPath));
+                }
+                catch { }
+            }
         }
 
         public static string FindFFmpegPath()
@@ -269,21 +300,48 @@ namespace VideoTrimmer
             Grid.SetRow(contentPanel, 1);
             mainGrid.Children.Add(contentPanel);
 
+            Grid headerGrid = new Grid() { Margin = new Thickness(0, 0, 0, 15) };
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+
+            string logoPathForSetup = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app_logo.png");
+            if (File.Exists(logoPathForSetup))
+            {
+                try
+                {
+                    Image imgLogo = new Image();
+                    imgLogo.Source = new System.Windows.Media.Imaging.BitmapImage(new Uri(logoPathForSetup));
+                    imgLogo.Width = 48;
+                    imgLogo.Height = 48;
+                    imgLogo.Margin = new Thickness(0, 0, 15, 0);
+                    imgLogo.VerticalAlignment = VerticalAlignment.Center;
+                    Grid.SetColumn(imgLogo, 0);
+                    headerGrid.Children.Add(imgLogo);
+                }
+                catch { }
+            }
+
+            StackPanel titleTextPanel = new StackPanel();
+            titleTextPanel.VerticalAlignment = VerticalAlignment.Center;
+            Grid.SetColumn(titleTextPanel, 1);
+
             TextBlock titleLabel = new TextBlock();
             titleLabel.Text = "Hızlı Video Kırpıcı";
             titleLabel.Foreground = UI.TextWhite;
             titleLabel.FontSize = 22;
             titleLabel.FontWeight = FontWeights.Bold;
-            titleLabel.Margin = new Thickness(0, 0, 0, 5);
-            contentPanel.Children.Add(titleLabel);
+            titleLabel.Margin = new Thickness(0, 0, 0, 2);
+            titleTextPanel.Children.Add(titleLabel);
 
             TextBlock descLabel = new TextBlock();
             descLabel.Text = "Windows sağ tık menüsüne eklenerek videoları saniyeler içinde kayıpsız kesmenizi sağlar.";
             descLabel.Foreground = UI.TextGray;
-            descLabel.FontSize = 13;
+            descLabel.FontSize = 12;
             descLabel.TextWrapping = TextWrapping.Wrap;
-            descLabel.Margin = new Thickness(0, 0, 0, 15);
-            contentPanel.Children.Add(descLabel);
+            titleTextPanel.Children.Add(descLabel);
+
+            headerGrid.Children.Add(titleTextPanel);
+            contentPanel.Children.Add(headerGrid);
 
             bool ffmpegFound = IsFFmpegAvailable();
 
