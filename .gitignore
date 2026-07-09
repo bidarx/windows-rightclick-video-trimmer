@@ -1,0 +1,23 @@
+# Compiled output
+*.exe
+*.dll
+*.pdb
+
+# Logs & temp files
+*.log
+debug.txt
+temp_*
+
+# Media files (temporary / test clips)
+*.mp4
+*.mkv
+*.avi
+*.mov
+
+# IDE configurations
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
