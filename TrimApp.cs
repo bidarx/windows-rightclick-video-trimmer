@@ -234,12 +234,18 @@ namespace VideoTrimmer
         private TextBlock textStatus;
         private Button btnInstall;
         private Button btnUninstall;
+        private Border ffmpegWarningBorder;
+        private TextBlock footerText;
+        private Grid overlayGrid;
+        private TextBlock overlayText;
+        private TextBlock overlaySubtext;
+        private ProgressBar overlayProgress;
 
         public SetupWindow()
         {
             this.Title = "Hızlı Video Kırpıcı Kurulumu";
             this.Width = 480;
-            this.Height = 340;
+            this.Height = 380;
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.ResizeMode = ResizeMode.NoResize;
             this.Background = UI.BgDark;
@@ -276,15 +282,51 @@ namespace VideoTrimmer
             descLabel.Foreground = UI.TextGray;
             descLabel.FontSize = 13;
             descLabel.TextWrapping = TextWrapping.Wrap;
-            descLabel.Margin = new Thickness(0, 0, 0, 20);
+            descLabel.Margin = new Thickness(0, 0, 0, 15);
             contentPanel.Children.Add(descLabel);
+
+            bool ffmpegFound = IsFFmpegAvailable();
+
+            // FFmpeg Missing Warning & Auto-Install Card
+            ffmpegWarningBorder = new Border();
+            ffmpegWarningBorder.Background = new SolidColorBrush(Color.FromRgb(48, 30, 36));
+            ffmpegWarningBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(180, 50, 50));
+            ffmpegWarningBorder.BorderThickness = new Thickness(1);
+            ffmpegWarningBorder.CornerRadius = new CornerRadius(6);
+            ffmpegWarningBorder.Padding = new Thickness(12, 8, 12, 8);
+            ffmpegWarningBorder.Margin = new Thickness(0, 0, 0, 15);
+            ffmpegWarningBorder.Visibility = ffmpegFound ? Visibility.Collapsed : Visibility.Visible;
+
+            Grid ffmpegWarningGrid = new Grid();
+            ffmpegWarningGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            ffmpegWarningGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+
+            TextBlock warningText = new TextBlock();
+            warningText.Text = "⚠️ Bilgisayarınızda FFmpeg bulunamadı. Kayıpsız kesim ve harici HEVC önizleme için gereklidir.";
+            warningText.Foreground = new SolidColorBrush(Color.FromRgb(255, 180, 180));
+            warningText.FontSize = 11;
+            warningText.TextWrapping = TextWrapping.Wrap;
+            warningText.VerticalAlignment = VerticalAlignment.Center;
+            warningText.Margin = new Thickness(0, 0, 10, 0);
+            Grid.SetColumn(warningText, 0);
+            ffmpegWarningGrid.Children.Add(warningText);
+
+            Button btnDownloadFFmpeg = UI.CreateButton("Otomatik Yükle", new SolidColorBrush(Color.FromRgb(180, 50, 50)), new SolidColorBrush(Color.FromRgb(210, 70, 70)));
+            btnDownloadFFmpeg.FontSize = 11;
+            btnDownloadFFmpeg.Padding = new Thickness(10, 5, 10, 5);
+            btnDownloadFFmpeg.Click += DownloadFFmpeg_Click;
+            Grid.SetColumn(btnDownloadFFmpeg, 1);
+            ffmpegWarningGrid.Children.Add(btnDownloadFFmpeg);
+
+            ffmpegWarningBorder.Child = ffmpegWarningGrid;
+            contentPanel.Children.Add(ffmpegWarningBorder);
 
             // Status indicator
             Border statusBorder = new Border();
             statusBorder.Background = UI.BgPanel;
             statusBorder.CornerRadius = new CornerRadius(6);
             statusBorder.Padding = new Thickness(12, 8, 12, 8);
-            statusBorder.Margin = new Thickness(0, 0, 0, 20);
+            statusBorder.Margin = new Thickness(0, 0, 0, 15);
 
             textStatus = new TextBlock();
             textStatus.Foreground = UI.TextWhite;
@@ -325,11 +367,9 @@ namespace VideoTrimmer
             footerBorder.Padding = new Thickness(15, 6, 15, 6);
             Grid.SetRow(footerBorder, 2);
 
-            TextBlock footerText = new TextBlock();
+            footerText = new TextBlock();
             footerText.FontSize = 11;
-            footerText.Foreground = UI.TextGray;
 
-            bool ffmpegFound = IsFFmpegAvailable();
             if (ffmpegFound)
             {
                 footerText.Text = "✓ FFmpeg Algılandı - İşlemleriniz ışık hızında gerçekleşecek.";
@@ -337,16 +377,186 @@ namespace VideoTrimmer
             }
             else
             {
-                footerText.Text = "⚠️ FFmpeg BULUNAMADI! Hızlı kesim çalışmayabilir. Lütfen ffmpeg yükleyin.";
+                footerText.Text = "⚠️ FFmpeg BULUNAMADI! Hızlı kesim çalışmayabilir. Lütfen otomatik yükleyin.";
                 footerText.Foreground = new SolidColorBrush(Color.FromRgb(255, 107, 107));
             }
 
             footerBorder.Child = footerText;
             mainGrid.Children.Add(footerBorder);
 
+            // Overlay Grid (for Download / Install Progress)
+            overlayGrid = new Grid();
+            overlayGrid.Background = new SolidColorBrush(Color.FromArgb(220, 15, 15, 20));
+            overlayGrid.Visibility = Visibility.Collapsed;
+            Grid.SetRowSpan(overlayGrid, 3);
+
+            StackPanel overlayContent = new StackPanel();
+            overlayContent.VerticalAlignment = VerticalAlignment.Center;
+            overlayContent.HorizontalAlignment = HorizontalAlignment.Center;
+
+            overlayText = new TextBlock();
+            overlayText.Text = "FFmpeg İndiriliyor...";
+            overlayText.Foreground = UI.TextWhite;
+            overlayText.FontSize = 18;
+            overlayText.FontWeight = FontWeights.Bold;
+            overlayText.HorizontalAlignment = HorizontalAlignment.Center;
+            overlayText.Margin = new Thickness(0, 0, 0, 8);
+            overlayContent.Children.Add(overlayText);
+
+            overlaySubtext = new TextBlock();
+            overlaySubtext.Text = "Lütfen bekleyin...";
+            overlaySubtext.Foreground = UI.TextGray;
+            overlaySubtext.FontSize = 12;
+            overlaySubtext.HorizontalAlignment = HorizontalAlignment.Center;
+            overlaySubtext.Margin = new Thickness(0, 0, 0, 15);
+            overlayContent.Children.Add(overlaySubtext);
+
+            overlayProgress = new ProgressBar();
+            overlayProgress.Width = 300;
+            overlayProgress.Height = 6;
+            overlayProgress.Foreground = UI.AccentViolet;
+            overlayProgress.Background = new SolidColorBrush(Color.FromRgb(42, 42, 53));
+
+            Border progBorder = new Border();
+            progBorder.CornerRadius = new CornerRadius(3);
+            progBorder.ClipToBounds = true;
+            progBorder.Child = overlayProgress;
+            overlayContent.Children.Add(progBorder);
+
+            overlayGrid.Children.Add(overlayContent);
+            mainGrid.Children.Add(overlayGrid);
+
             this.Content = mainGrid;
 
             UpdateStatus();
+        }
+
+        private void DownloadFFmpeg_Click(object sender, RoutedEventArgs e)
+        {
+            overlayGrid.Visibility = Visibility.Visible;
+            overlayText.Text = "FFmpeg İndiriliyor...";
+            overlaySubtext.Text = "Bağlantı kuruluyor...";
+            overlayProgress.IsIndeterminate = false;
+            overlayProgress.Value = 0;
+
+            try
+            {
+                // Force TLS 1.2 for modern HTTPS connections
+                System.Net.ServicePointManager.SecurityProtocol = (System.Net.SecurityProtocolType)3072;
+
+                string zipUrl = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip";
+                string localZip = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg.zip");
+
+                using (var webClient = new System.Net.WebClient())
+                {
+                    webClient.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+
+                    webClient.DownloadProgressChanged += (s, ev) =>
+                    {
+                        double downloadedMb = (double)ev.BytesReceived / 1024 / 1024;
+                        double totalMb = (double)ev.TotalBytesToReceive / 1024 / 1024;
+                        overlayProgress.Value = ev.ProgressPercentage;
+                        overlaySubtext.Text = string.Format("İndiriliyor: {0:F1} MB / {1:F1} MB ({2}%)", downloadedMb, totalMb, ev.ProgressPercentage);
+                    };
+
+                    webClient.DownloadFileCompleted += (s, ev) =>
+                    {
+                        if (ev.Error != null)
+                        {
+                            overlayGrid.Visibility = Visibility.Collapsed;
+                            MessageBox.Show("İndirme sırasında hata oluştu: " + ev.Error.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        ExtractAndInstallFFmpeg(localZip);
+                    };
+
+                    webClient.DownloadFileAsync(new Uri(zipUrl), localZip);
+                }
+            }
+            catch (Exception ex)
+            {
+                overlayGrid.Visibility = Visibility.Collapsed;
+                MessageBox.Show("İndirme başlatılamadı: " + ex.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ExtractAndInstallFFmpeg(string zipPath)
+        {
+            overlayText.Text = "Arşivden Çıkarılıyor...";
+            overlaySubtext.Text = "Dosyalar çıkarılıyor, lütfen bekleyin (biraz zaman alabilir)...";
+            overlayProgress.IsIndeterminate = true;
+
+            Task.Factory.StartNew(() =>
+            {
+                string tempDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ffmpeg_temp");
+                try
+                {
+                    if (Directory.Exists(tempDir))
+                    {
+                        Directory.Delete(tempDir, true);
+                    }
+                    Directory.CreateDirectory(tempDir);
+
+                    // Call PowerShell to extract zip archive silently
+                    string psCommand = string.Format("Expand-Archive -Path '{0}' -DestinationPath '{1}' -Force", zipPath, tempDir);
+                    ProcessStartInfo psi = new ProcessStartInfo("powershell", "-Command \"" + psCommand + "\"");
+                    psi.UseShellExecute = false;
+                    psi.CreateNoWindow = true;
+                    using (var p = Process.Start(psi))
+                    {
+                        if (p != null) p.WaitForExit();
+                    }
+
+                    // Traverse the temp folder recursively to find ffmpeg.exe and ffplay.exe
+                    string[] foundFfmpeg = Directory.GetFiles(tempDir, "ffmpeg.exe", SearchOption.AllDirectories);
+                    string[] foundFfplay = Directory.GetFiles(tempDir, "ffplay.exe", SearchOption.AllDirectories);
+
+                    string destDir = AppDomain.CurrentDomain.BaseDirectory;
+                    if (foundFfmpeg.Length > 0)
+                    {
+                        File.Copy(foundFfmpeg[0], Path.Combine(destDir, "ffmpeg.exe"), true);
+                    }
+                    if (foundFfplay.Length > 0)
+                    {
+                        File.Copy(foundFfplay[0], Path.Combine(destDir, "ffplay.exe"), true);
+                    }
+
+                    // Cleanup zip and temp folders
+                    try { File.Delete(zipPath); } catch { }
+                    try { Directory.Delete(tempDir, true); } catch { }
+
+                    // Refresh UI state on main UI thread
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        overlayGrid.Visibility = Visibility.Collapsed;
+                        bool ffmpegFound = IsFFmpegAvailable();
+                        if (ffmpegFound)
+                        {
+                            ffmpegWarningBorder.Visibility = Visibility.Collapsed;
+                            footerText.Text = "✓ FFmpeg Algılandı - İşlemleriniz ışık hızında gerçekleşecek.";
+                            footerText.Foreground = UI.AccentCyan;
+                            MessageBox.Show("FFmpeg ve FFplay başarıyla kuruldu! Artık videoları sorunsuzca kesip önizleyebilirsiniz.", "Başarılı", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Çıkartma işlemi bitti ancak FFmpeg çalıştırılamadı. Lütfen uygulamayı yeniden başlatın.", "Uyarı", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    // Cleanup on error
+                    try { File.Delete(zipPath); } catch { }
+                    try { Directory.Delete(tempDir, true); } catch { }
+
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        overlayGrid.Visibility = Visibility.Collapsed;
+                        MessageBox.Show("FFmpeg yükleme hatası: " + ex.Message, "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }));
+                }
+            });
         }
 
         private void UpdateStatus()
@@ -480,8 +690,8 @@ namespace VideoTrimmer
                 psi.CreateNoWindow = true;
                 using (var p = Process.Start(psi))
                 {
-                    p.WaitForExit();
-                    return p.ExitCode == 0;
+                    if (p != null) p.WaitForExit();
+                    return p != null && p.ExitCode == 0;
                 }
             }
             catch

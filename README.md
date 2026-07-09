@@ -23,6 +23,11 @@ A **lightweight, blazing-fast, and system-friendly** video cutting/trimming appl
 * ⌨️ **Editor Shortcuts:** Professional shortcuts (Space, I, O, Arrow Keys) for precise frame seeking and marker positioning.
 * 🎥 **Codec-free Playback Fallback:** Includes a fallback mode using `ffplay.exe` to preview high-end codecs (HEVC/H.265/MKV) even if Windows doesn't have the codecs installed.
 
+### Installation
+1. Download the latest **`TrimApp.exe`** from the Releases page.
+2. Run it. If `ffmpeg.exe` and `ffplay.exe` are missing, simply click **"Otomatik Yükle" (Auto Install)** in the app to download them instantly.
+3. Click **"Sağ Tıka Ekle" (Add to Right-Click)** to register it in your Windows explorer.
+
 ### Shortcuts
 * **Space**: Play / Pause
 * **I**: Set Start (In Point)
@@ -48,6 +53,11 @@ Windows işletim sisteminde videolara sağ tıkladığınızda hızlıca kırpma
 - 🔗 **Sağ Tık Entegrasyonu:** Herhangi bir video dosyasına sağ tıkladığınızda "Videoyu Kes (Hızlı)" menüsü belirir (Yönetici yetkisi gerektirmez).
 - ⌨️ **Klavye Kısayolları:** Hızlı önizleme ve kesim noktalarını belirleme için profesyonel video kurgu kısayolları.
 - 🎥 **Kodeksiz Önizleme Yardımı:** HEVC (H.265) veya MKV gibi bilgisayarda kodeki olmayan videoları `ffplay.exe` kullanarak kayıpsız ve hızlı bir şekilde önizler.
+
+### Kurulum
+1. Sürümler (Releases) sayfasından güncel **`TrimApp.exe`** dosyasını indirin.
+2. Uygulamayı çalıştırın. Eğer `ffmpeg.exe` ve `ffplay.exe` eksikse, arayüzdeki **"Otomatik Yükle"** butonuna basarak dosyaları saniyeler içinde otomatik kurun.
+3. **"Sağ Tıka Ekle"** butonuna tıklayarak Windows sağ tık menünüze entegre edin.
 
 ### Kısayollar
 - **Boşluk (Space)**: Oynat / Duraklat
